@@ -1,0 +1,62 @@
+using System;
+
+public delegate void UnaryAction(double x);
+
+public static class ArrayProcessor
+{
+    public static void ProcessArray(double[] arr, UnaryAction action)
+    {
+        foreach (var item in arr)
+        {
+            action(item);
+        }
+    }
+}
+
+public class SumCalculator
+{
+    public double Sum { get; private set; } = 0;
+    public void AddToSum(double x) => Sum += x;
+}
+
+public class MaxCalculator
+{
+    public double Max { get; private set; } = double.MinValue;
+    public void UpdateMax(double x)
+    {
+        if (x > Max) Max = x;
+    }
+}
+
+public class Program
+{
+    public static void Main()
+    {
+        Random rnd = new Random();
+        double[] arr = new double[10];
+        for (int i = 0; i < arr.Length; i++)
+            arr[i] = rnd.NextDouble() * 100;
+
+        Console.WriteLine("Array:");
+        Console.WriteLine(string.Join(", ", arr));
+
+        // === שימוש במחלקות ===
+        SumCalculator sumCalc = new SumCalculator();
+        MaxCalculator maxCalc = new MaxCalculator();
+        ArrayProcessor.ProcessArray(arr, sumCalc.AddToSum);
+        ArrayProcessor.ProcessArray(arr, maxCalc.UpdateMax);
+        Console.WriteLine($"\nUsing classes:");
+        Console.WriteLine($"Sum: {sumCalc.Sum}");
+        Console.WriteLine($"Max: {maxCalc.Max}");
+
+        // === שימוש ב-Lambda closures ===
+        double sum = 0;
+        double max = double.MinValue;
+        ArrayProcessor.ProcessArray(arr, x => sum += x);
+        ArrayProcessor.ProcessArray(arr, x => { if (x > max) max = x; });
+
+        Console.WriteLine($"\nUsing Lambda closures:");
+        Console.WriteLine($"Sum: {sum}");
+        Console.WriteLine($"Max: {max}");
+    }
+}
