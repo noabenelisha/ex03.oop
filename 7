@@ -1,1 +1,68 @@
+using System;
+using System.Collections.Generic;
+
+public class GenericOperationTable<T>
+{
+    // הגדרת delegate עבור פעולה בין שני טיפוסי T
+    public delegate T OpFunc(T x, T y);
+
+    private List<T> rowValues;
+    private List<T> colValues;
+    private OpFunc op;
+
+    // Constructor מקבל רשימת שורות, רשימת עמודות והפעולה
+    public GenericOperationTable(List<T> _rowValues, List<T> _colValues, OpFunc _op)
+    {
+        this.rowValues = _rowValues;
+        this.colValues = _colValues;
+        this.op = _op;
+    }
+
+    // Print מדפיסה את הלוח
+    public void Print()
+    {
+        // הדפסת כותרת העמודות
+        Console.Write("\t");
+        foreach (var col in colValues)
+        {
+            Console.Write(col + "\t");
+        }
+        Console.WriteLine();
+
+        // הדפסת כל שורה
+        foreach (var row in rowValues)
+        {
+            Console.Write(row + "\t");
+            foreach (var col in colValues)
+            {
+                Console.Write(op(row, col) + "\t");
+            }
+            Console.WriteLine();
+        }
+    }
+}
+
+// דוגמת שימוש
+class Program
+{
+    static void Main(string[] args)
+    {
+        List<double> rowValues = new List<double>();
+        for (int i = 2; i <= 4; i++)
+        {
+            rowValues.Add(1.0 / i);
+        }
+
+        List<double> colValues = new List<double>();
+        for (int i = 2; i <= 4; i++)
+        {
+            colValues.Add(1.0 / i);
+        }
+
+        GenericOperationTable<double> t1 =
+            new GenericOperationTable<double>(rowValues, colValues, (x, y) => x + y);
+
+        t1.Print();
+    }
+}
 
